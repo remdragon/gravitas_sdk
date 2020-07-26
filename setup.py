@@ -1,8 +1,8 @@
 from distutils.core import setup
 
 setup(
-	name = 'gravitas_sdk',
-	packages = ['gravitas_sdk'],
+	name = 'gravsdk',
+	packages = ['gravsdk'],
 	version = '0.0.1',
 	install_requires = [
 		'websockets'
