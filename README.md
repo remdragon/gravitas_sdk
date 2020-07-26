@@ -1,4 +1,4 @@
-# https://github.com/remdragon/gravitas_sdk.git
+# Gravitas Python SDK
 
 This is the Python SDK for gravitas API (currently in development)
 
