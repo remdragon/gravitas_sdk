@@ -6,7 +6,7 @@ setup(
 	version = '0.0.1',
 	install_requires = [
 		'websockets'
-	]
+	],
 	description = 'Python SDK for accessing the Gravitas call center environment API',
 	author = 'joshpatten',
 	author_email = 'joshpatten@gmail.com',
