@@ -188,11 +188,7 @@ class sdkv1(object):
 		
 		    success = sdk.logout()
 		"""
-		if self.login_session_check():
-			result, responsedata = self.CRUD.delete('login', {})
-			if not self._login_sanity_check(result, responsedata):
-				return False
-			return True
-		else:
-			# If we're already logged out there's no need to do it again, return defaults
-			return True
+		result, responsedata = self.CRUD.delete('login', {})
+		if not self._login_sanity_check(result, responsedata):
+			return False
+		return True
