@@ -26,10 +26,9 @@ class HTTPCRUD(object):
 	"""
 	HTTP API CRUD interface
 	"""
-	def __init__(self, host: str, port: int, ssl_verify_enable: bool) -> None:
+	def __init__(self, host: str, ssl_verify_enable: bool) -> None:
 		import requests
 		self.host = host
-		self.port = port
 		self.ssl_verify_enable = ssl_verify_enable
 		self.session = requests.Session()
 	
@@ -40,7 +39,7 @@ class HTTPCRUD(object):
 		params: Opt[Dict[str,str]] = None,
 		json_body: Opt[Dict[str,str]] = None,
 	) -> Tuple[bool,Dict[str,str]]:
-		uri = f'https://{self.host}:{self.port}/rest/{endpoint}'
+		uri = f'https://{self.host}/rest/{endpoint}'
 		req = method ( uri, params = params, json = json_body, verify = self.ssl_verify_enable )
 		try:
 			responsedata = req.json()
@@ -48,7 +47,6 @@ class HTTPCRUD(object):
 			raise GravJSONValueError (
 				req.text
 			)
-			return (False, {})
 		return True, responsedata
 	
 	def create(self, endpoint: str, params: dict) -> Tuple[bool,Dict[str,str]]:
@@ -66,14 +64,14 @@ class HTTPCRUD(object):
 """
 class WSCRUD(object):
 	# TODO FIXME: write this whole class
-	def __init__(self, host: str, port: int = 8443, ssl_verify_enable: bool = True):
+	def __init__(self, host:, ssl_verify_enable: bool = True):
 		import asyncio
 		import websockets # pip install websockets
 		self.host = host
 		self.port = port
 		self.ssl_verify_enable = ssl_verify_enable
 		asyncio.get_event_loop().run_until_complete(
-			self.connect(f'wss://{self.host}:{self.port}', 'hello')
+			self.connect(f'wss://{self.host}', 'hello')
 		)
 
 	async def connect(self, hoststr, xmit):
