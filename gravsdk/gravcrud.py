@@ -39,7 +39,7 @@ class HTTPCRUD(object):
 		params: Opt[Dict[str,str]] = None,
 		json_body: Opt[Dict[str,str]] = None,
 	) -> Tuple[bool,Dict[str,str]]:
-		uri = f'https://{self.host}/rest/{endpoint}'
+		uri = f'{self.host}/rest/{endpoint}'
 		req = method ( uri, params = params, json = json_body, verify = self.ssl_verify_enable )
 		try:
 			responsedata = req.json()

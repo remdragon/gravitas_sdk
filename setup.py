@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
 	name = 'gravsdk',
 	packages = ['gravsdk'],
-	version = '0.0.2',
+	version = '0.0.3',
 	install_requires = [
 		'websockets'
 	],
