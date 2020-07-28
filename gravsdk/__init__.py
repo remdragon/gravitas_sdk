@@ -69,7 +69,8 @@ class sdkv1(object):
 		if self.protocol == 'https':
 			self.CRUD = gravcrud.HTTPCRUD(
 				self.hostparts.geturl(),
-				self.ssl_verify_enable
+				self.ssl_verify_enable,
+				self.testmode
 			)
 		#elif self.protocol == 'wss':
 		#	self.CRUD = gravcrud.WSCRUD(
