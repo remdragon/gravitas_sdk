@@ -48,7 +48,7 @@ class HTTPCRUD(object):
 			adapter = requests_mock.Adapter()
 			self.session.mount('https://', adapter)
 			adapter.register_uri(txt_method, uri, text = json.dumps(json_response))
-		req = method ( uri, params = params, json = json_body, verify = self.ssl_verify_enable, testmode = self.testmode )
+		req = method ( uri, params = params, json = json_body, verify = self.ssl_verify_enable )
 		try:
 			responsedata = req.json()
 		except (ValueError):
