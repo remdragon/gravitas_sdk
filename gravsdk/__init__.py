@@ -57,13 +57,14 @@ class sdkv1(object):
 	        ssl_verify_enable = False # This should be `True` in production
 	    )
 	"""
-	def __init__(self, hoststring: str, ssl_verify_enable: bool = True):
+	def __init__(self, hoststring: str, ssl_verify_enable: bool = True, testmode: bool = False):
 		try:
 			self.hostparts = urlparse(hoststring)
 		except Exception as e:
 			raise GravError(f'invalid url specified: `{e}`')
 		self.ssl_verify_enable = ssl_verify_enable
 		self.protocol = self.hostparts.scheme
+		self.testmode = testmode
 		#TODO FIXME: make this cleaner with enum
 		if self.protocol == 'https':
 			self.CRUD = gravcrud.HTTPCRUD(
@@ -90,7 +91,7 @@ class sdkv1(object):
 			raise GravAuthError(responsedata['error'])
 		return True
 	
-	def login_session_check(self) -> Tuple[bool,Dict[str,str]]:
+	def login_session_check(self, testresponse: Dict[str,str] = {}) -> Tuple[bool,Dict[str,str]]:
 		"""
 		# `login_session_check` SDK method
 
@@ -118,7 +119,7 @@ class sdkv1(object):
 
 		    status, userdata = sdk.login_session_check()
 		"""
-		result, responsedata = self.CRUD.read('login', {})
+		result, responsedata = self.CRUD.read('login', {}, self.testmode, testresponse)
 		if not self._login_sanity_check(result, responsedata):
 			return False, {}
 		if len(responsedata['rows']) == 0:
@@ -127,7 +128,7 @@ class sdkv1(object):
 			return True, responsedata['rows'][0]
 		
 	
-	def login(self, username: str, password: str) -> bool:
+	def login(self, username: str, password: str, testresponse: Dict[str,str] = {}) -> bool:
 		"""
 		# `login` SDK method
 		
@@ -157,7 +158,7 @@ class sdkv1(object):
 			'USER' : username,
 			'PASSWORD' : password
 		}
-		result, responsedata = self.CRUD.create('login', payload)
+		result, responsedata = self.CRUD.create('login', payload, self.testmode, testresponse)
 		if not self._login_sanity_check(result, responsedata):
 			return False
 		if 'rows' not in responsedata:
@@ -174,7 +175,7 @@ class sdkv1(object):
 		#TODO FIXME: deal with other scenarios
 		return True
 
-	def logout(self) -> bool:
+	def logout(self, testresponse: Dict[str,str] = {}) -> bool:
 		"""
 		# `logout` SDK method
 		
@@ -188,7 +189,7 @@ class sdkv1(object):
 		
 		    success = sdk.logout()
 		"""
-		result, responsedata = self.CRUD.delete('login', {})
+		result, responsedata = self.CRUD.delete('login', {}, self.testmode, testresponse)
 		if not self._login_sanity_check(result, responsedata):
 			return False
 		return True
