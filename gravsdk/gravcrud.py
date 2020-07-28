@@ -28,7 +28,6 @@ class HTTPCRUD(object):
 	"""
 	def __init__(self, host: str, ssl_verify_enable: bool, testmode: bool = False) -> None:
 		import requests
-		self.testmode = testmode
 		self.host = host
 		self.ssl_verify_enable = ssl_verify_enable
 		self.session = requests.Session()
@@ -39,15 +38,8 @@ class HTTPCRUD(object):
 		*,
 		params: Opt[Dict[str,str]] = None,
 		json_body: Opt[Dict[str,str]] = None,
-		txt_method: str = '',
-		json_response: Dict[str,str] = {}
 	) -> Tuple[bool,Dict[str,str]]:
 		uri = f'{self.host}/rest/{endpoint}'
-		if self.testmode:
-			import requests_mock # pip install requests_mock
-			adapter = requests_mock.Adapter()
-			self.session.mount('https://', adapter)
-			adapter.register_uri(txt_method, uri, text = json.dumps(json_response))
 		req = method ( uri, params = params, json = json_body, verify = self.ssl_verify_enable )
 		try:
 			responsedata = req.json()
@@ -57,16 +49,16 @@ class HTTPCRUD(object):
 			)
 		return True, responsedata
 	
-	def create(self, endpoint: str, params: dict, testmode: bool, testresponse: Dict[str,str]) -> Tuple[bool,Dict[str,str]]:
+	def create(self, endpoint: str, params: dict) -> Tuple[bool,Dict[str,str]]:
 		return self._request ( self.session.post, endpoint, json_body = params )
 	
-	def read(self, endpoint: str, params: dict, testmode: bool, testresponse: Dict[str,str]) -> Tuple[bool,Dict[str,str]]:
+	def read(self, endpoint: str, params: dict) -> Tuple[bool,Dict[str,str]]:
 		return self._request ( self.session.get, endpoint, params = params )
 	
-	def update(self, endpoint: str, params: dict, testmode: bool, testresponse: Dict[str,str]) -> Tuple[bool,Dict[str,str]]:
+	def update(self, endpoint: str, params: dict) -> Tuple[bool,Dict[str,str]]:
 		return self._request ( self.session.patch, endpoint, json_body = params )
 
-	def delete(self, endpoint: str, params: dict, testmode: bool, testresponse: Dict[str,str]) -> Tuple[bool,Dict[str,str]]:
+	def delete(self, endpoint: str, params: dict) -> Tuple[bool,Dict[str,str]]:
 		return self._request ( self.session.delete, endpoint, params = params )
 
 """
