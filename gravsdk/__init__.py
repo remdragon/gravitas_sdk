@@ -236,10 +236,43 @@ class sdkv1(object):
 
 		## `READ`
 
+		|Attribute|Required|Type|Description|
+		|-|-|-|-|
+		|`method`|required|callable|method of request. One of `sdkv1.READ`, `sdkv1.UPDATE`, `sdkv1.CREATE`, `sdkv1.DELETE`|
+		|`fields`|optional|list|List of fields to return in the search results. Default is to return all fields|
+		|`order`|optional|list|List of fields to order the returned data by. Ignored if client_id is specified|
+		|`client_id`|integer|Number 1-9999. Used to get information about a specific client|
+		|`limit`|integer|Maximum number of results to return. Default is to return all results|
+		
+		## Expected return value format
+		
+		A tuple with the following information is returned:
 
+		* A boolean that represents whether or not the request was successful
+		* An array of dictionaries with client information. If a client_id is specified, a single element is returned
+		
+		## Usage
+		
+		    success, client_info = sdk.clients(
+		        method = sdk.READ
+				client_id = 100
+				fields = [
+					'CLIENT_ID',
+					'NAME'
+				],
+				order = [
+					'NAME'
+				]
+		        limit = 100
+		    )
 
 		## `UPDATE`
+		
+		Not Implemented Yet
+		
 		## `DELETE`
+
+		Not Implemented Yet
 
 		API NOTES:
 		URL parameters don't appear to be functional:
