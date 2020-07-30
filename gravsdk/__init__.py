@@ -8,7 +8,7 @@ from gravsdk import gravcrud
 
 class GravError(Exception):
 	"""
-	# Exception Class: GravError
+	# Exception Class: `GravError`
 	Exception raised for general SDK errors
 	
 	|Attribute|Description|
@@ -21,9 +21,9 @@ class GravError(Exception):
 
 class GravAuthError(Exception):
 	"""
-	# Exception Class: GravAuthError
+	# Exception Class: `GravAuthError`
 	
-	The GravAuthError exception class is raised when invalid credentials are used or response received from the API is missing data
+	The `GravAuthError` exception class is raised when invalid credentials are used or response received from the API is missing data
 	
 	|Attribute|Type|Description|
 	|-|-|-|
@@ -35,6 +35,25 @@ class GravAuthError(Exception):
 	"""
 	def __init__(self, responsetext: str):
 		self.message = f"Login error: `{responsetext}`"
+		super().__init__(self.message)
+
+class GravGeneralError(Exception):
+	"""
+	# Exception Class: GravGeneralError
+
+	The `GravGeneralError` exception class is raised when general non-specific errors occur, such as passing an incorrectly typed variable or other user mistakes occur.
+
+	|Attribute|Type|Description|
+	|-|-|-|
+	|`responsetext`|str|Descriptive text of the error encountered|
+	
+	## Usage:
+	
+	    raise GravGeneralError('Invalid method specified: sdk.PUPPIES')
+
+	"""
+	def __init__(self, responsetext: str):
+		self.message = f"General error: `{responsetext}`"
 		super().__init__(self.message)
 
 class sdkv1(object):
@@ -57,6 +76,12 @@ class sdkv1(object):
 	        ssl_verify_enable = False # This should be `True` in production
 	    )
 	"""
+	# CONSTANTS
+	READ = 1
+	CREATE = 2
+	UPDATE = 3
+	DELETE = 4 
+
 	def __init__(self, hoststring: str, ssl_verify_enable: bool = True):
 		try:
 			self.hostparts = urlparse(hoststring)
@@ -188,3 +213,58 @@ class sdkv1(object):
 		if not self._login_sanity_check(result, responsedata):
 			return False
 		return True
+	
+	def clients(
+		self,
+		method: int,
+		client_id: int = 0,
+		fields: list = [],
+		order: list = [],
+		limit: int = 100,
+		data: Dict[str,str] = {}
+	) -> Dict[str,str]:
+		"""
+		# The `clients` SDK method
+		
+		The `clients` SDK method is used to get information about clients as well as set attributes for clients.
+
+		The `clients` SDK method has 4 submethods:
+
+		## `CREATE`
+
+		Not Implemented Yet
+
+		## `READ`
+
+
+
+		## `UPDATE`
+		## `DELETE`
+
+		API NOTES:
+		URL parameters don't appear to be functional:
+		`limit` doesn't appear to do anything
+		`fields` doesn't appear to do anything
+		`order` doesn't appear to do anything
+		"""
+		if method not in [self.CREATE, self.READ, self.UPDATE, self.DELETE]:
+			raise GravGeneralError(f'Invalid method specified: {method}')
+		if method in [self.CREATE, self.UPDATE, self.DELETE]:
+			raise GravGeneralError(f'Method not implemented yet!')
+		if method == self.READ:
+			params = {}
+			if len(fields) > 0:
+				params['fields'] = ','.join(fields)
+			if limit > 0:
+				params['limit'] = limit
+			if len(order) > 0:
+				params['order'] = ','.join(order)
+			pathuri = "clients"
+			if client_id > 0:
+				pathuri = f"{pathuri}/{client_id}"
+			success, responsedata = self.CRUD.read(pathuri, params)
+			if not success:
+				raise GravGeneralError(f"Error received from API: {responsedata['error']}")
+			if len(responsedata['rows']) == 0:
+				raise GravGeneralError(f"Client ID `{client_id}` not found!")
+			return True, responsedata['rows']
