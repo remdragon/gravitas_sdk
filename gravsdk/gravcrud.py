@@ -3,7 +3,6 @@ Gavitas CRUD library
 """
 import sys
 from typing import *
-from typing import Optional as Opt
 import json
 
 class GravJSONValueError(Exception):
@@ -36,8 +35,8 @@ class HTTPCRUD(object):
 		method: Callable[...,Any],
 		endpoint: str,
 		*,
-		params: Opt[Dict[str,str]] = None,
-		json_body: Opt[Dict[str,str]] = None,
+		params: Optional[Dict[str,str]] = None,
+		json_body: Optional[Dict[str,str]] = None,
 	) -> Tuple[bool,Dict[str,str]]:
 		uri = f'{self.host}/rest/{endpoint}'
 		req = method ( uri, params = params, json = json_body, verify = self.ssl_verify_enable )
